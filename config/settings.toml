@@ -1,0 +1,21 @@
+# settings.toml
+# Global project settings for job-application-agent
+
+[app]
+name = "Job Application Agent"
+version = "0.1.0"
+default_candidate = "israel"
+
+[database]
+path = "storage/career.db"
+enable_fts5 = true
+
+[ingestion]
+allowed_extensions = [".pdf", ".docx", ".txt", ".md", ".json", ".py", ".sql", ".yaml", ".yml", ".ts"]
+chunk_size = 1000
+chunk_overlap = 150
+
+[analysis]
+default_language = "en"
+star_framework_enabled = true
+auto_sync_knowledge_md = true

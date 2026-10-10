@@ -1,0 +1,418 @@
+version = 1
+
+[project]
+name = "prediction-market-agent"
+stage = "integration"
+purpose = "Sports prediction-market arbitrage research, monitoring, and paper signals"
+mode = "monitor_and_signals"
+runtime_enabled = false
+api_connections_enabled = true
+order_execution_enabled = false
+knowledge_root = "knowledge"
+
+[integrations.predictefy]
+transport = "official_python_sdk_rest"
+sdk_version = "1.0.0b8"
+activation = "explicit_cli_command"
+scope = "catalog_onboarding"
+read_only = true
+automatic_polling = false
+verification_status = "authenticated_catalog_query_succeeded"
+verified_at_utc = "2026-10-03T22:41:16.625098+00:00"
+verified_market_count = 3
+api_key_env = "PREDICTEFY_API_KEY"
+guide = "docs/integrations/predictefy.md"
+
+[apps.kalshi_btc15m]
+status = "reference_template_only"
+kind = "isolated_reference"
+path = "apps/kalshi-btc15m"
+series = "KXBTC15M"
+venue = "kalshi"
+exchange_index = 2
+mode = "dry_run_default"
+review_ui_port = 8770
+sdk = "@predictefy/sdk"
+sdk_version = "1.0.0-beta.9"
+credentials = "external_env_and_pem"
+automatic_live_execution = false
+live_activation = "user_only_flag_and_typed_confirmation"
+guide = "docs/kalshi-btc15m.md"
+
+[orchestration]
+pattern = "coordinator_with_specialists"
+planned_engine = "langgraph"
+quote_path = "deterministic"
+llm_on_each_quote = false
+history_backend = "sqlite"
+checkpointer_status = "planned_not_installed"
+market_time_zone = "UTC"
+operator_time_zone = "America/Lima"
+history_status = "planned"
+max_parallel_collectors = 3
+
+[models.economy]
+provider = "openai"
+id = "gpt-6-luna"
+reasoning_effort = "low"
+max_output_tokens = 3000
+source = "https://developers.openai.com/api/docs/models/gpt-6-luna"
+
+[models.balanced]
+provider = "openai"
+id = "gpt-6.1-sol"
+reasoning_effort = "medium"
+max_output_tokens = 6000
+source = "https://developers.openai.com/api/docs/models/gpt-6.1-sol"
+
+[models.policy]
+selection_status = "proposed_pending_account_and_evaluation"
+automatic_calls = false
+premium_enabled = false
+monthly_budget_usd = 0
+budget_status = "pending_definition"
+budget_enforcement = "not_implemented"
+
+[storage]
+status = "schema_proposed_not_deployed"
+local_backend = "sqlite"
+schema = "storage/schema.sql"
+bronze = "append_only_raw_payloads"
+silver = "validated_canonical_contracts_and_books"
+gold = "versioned_signals_and_paper_outcomes"
+checkpoint_database = ".runtime/checkpoints.sqlite"
+market_database = ".runtime/markets.sqlite"
+cloud_migration = "evaluate_postgres_and_object_storage_after_replay_benchmark"
+
+[research]
+math = "deterministic_payoff_and_cost_checks_first"
+machine_learning = "future_offline_point_in_time_evaluation"
+generative_ai = "bounded_rule_review_and_signal_explanation"
+
+[orchestration.graphs.research]
+purpose = "Resolve sports fixtures, propose equivalence, and request human review"
+[orchestration.graphs.observation]
+purpose = "Read venue data, persist bronze, validate silver, and freeze snapshots"
+[orchestration.graphs.signals]
+purpose = "Calculate coverage, apply risk checks, and persist paper signals to gold"
+[orchestration.graphs.learning]
+purpose = "Future offline feature engineering, model evaluation, and research"
+status = "future_not_implemented"
+
+[agents.coordinator]
+kind = "llm"
+role = "Interpret requests, select the workflow, and assemble evidence"
+profile = "balanced"
+prompt = "prompts/coordinator.md"
+context = "knowledge/project.md"
+thread_namespace = "prediction:coordinator"
+
+[agents.market_equivalence]
+kind = "llm"
+role = "Review sports contract definitions and propose matches with evidence"
+profile = "balanced"
+prompt = "prompts/equivalence.md"
+context = "docs/contracts.md"
+thread_namespace = "prediction:equivalence"
+
+[agents.market_analyst]
+kind = "llm"
+role = "Explain recorded signals and rejection reasons in English"
+profile = "economy"
+prompt = "prompts/analyst.md"
+context = "knowledge/project.md"
+thread_namespace = "prediction:analyst"
+
+[agents.learning_researcher]
+kind = "llm"
+role = "Future offline model research; never override coverage checks"
+profile = "balanced"
+prompt = "prompts/learning.md"
+context = "docs/data-platform.md"
+thread_namespace = "prediction:learning"
+
+[agents.fixture_resolver]
+kind = "deterministic"
+role = "Resolve competition, participants, start time, and fixture aliases"
+implementation_status = "planned"
+
+[agents.human_reviewer]
+kind = "deterministic"
+role = "Record an explicit evidence review; no order approval"
+implementation_status = "planned"
+
+[agents.polymarket_collector]
+kind = "deterministic"
+role = "Read Polymarket contracts, books, timestamps, and capabilities"
+implementation_status = "planned"
+venue = "polymarket"
+data_provider = "predictefy"
+
+[agents.kalshi_collector]
+kind = "deterministic"
+role = "Read Kalshi contracts, books, timestamps, and capabilities"
+implementation_status = "planned"
+venue = "kalshi"
+data_provider = "predictefy"
+
+[agents.soft_collector]
+kind = "deterministic"
+role = "Read each additional venue after selection and capability review"
+implementation_status = "planned"
+venue = "soft_pending"
+data_provider = "predictefy"
+
+[agents.bronze_writer]
+kind = "deterministic"
+role = "Persist immutable raw payloads and transport evidence"
+implementation_status = "planned"
+
+[agents.silver_builder]
+kind = "deterministic"
+role = "Clean, normalize, version, and link data to bronze records"
+implementation_status = "planned"
+
+[agents.observation_validator]
+kind = "deterministic"
+role = "Reject stale, incomplete, degraded, or mismatched observations"
+implementation_status = "planned"
+
+[agents.snapshot_barrier]
+kind = "deterministic"
+role = "Freeze one coherent bundle across all required legs"
+implementation_status = "planned"
+
+[agents.cost_and_liquidity]
+kind = "deterministic"
+role = "Calculate depth-aware costs with Decimal and verified fees"
+implementation_status = "planned"
+
+[agents.signal_evaluator]
+kind = "deterministic"
+role = "Separate same-outcome gaps from complementary coverage candidates"
+implementation_status = "planned"
+
+[agents.risk_controller]
+kind = "deterministic"
+role = "Check exposure, budgets, operational limits, and evidence validity"
+implementation_status = "planned"
+
+[agents.paper_planner]
+kind = "deterministic"
+role = "Create a non-executing multi-leg paper plan"
+implementation_status = "planned"
+
+[agents.audit_writer]
+kind = "deterministic"
+role = "Persist gold signals, lineage, explanations, and rejection evidence"
+implementation_status = "planned"
+
+[venues.polymarket]
+classification = "reference"
+connection_status = "pending_sports_capability_verification"
+speed_status = "hypothesis_to_measure"
+
+[venues.kalshi]
+classification = "reference"
+connection_status = "pending_sports_capability_verification"
+speed_status = "hypothesis_to_measure"
+
+[venues.soft_pending]
+classification = "soft"
+connection_status = "pending_sports_capability_verification"
+speed_status = "hypothesis_to_measure"
+
+[[workflow.steps]]
+id = "resolve_scope"
+agent = "coordinator"
+purpose = "Select sport, fixtures, venues, and scan policy"
+
+[[workflow.steps]]
+id = "discover_fixtures"
+agent = "fixture_resolver"
+purpose = "Resolve canonical fixture identities"
+
+[[workflow.steps]]
+id = "match_contracts"
+agent = "market_equivalence"
+purpose = "Reuse reviewed matches or propose a rules-based match"
+
+[[workflow.steps]]
+id = "human_approval"
+agent = "human_reviewer"
+purpose = "Pause for an explicit equivalence review when evidence is missing"
+
+[[workflow.steps]]
+id = "collect_quotes"
+agents = ["polymarket_collector", "kalshi_collector", "soft_collector"]
+purpose = "Collect required venues concurrently with bounded timeouts"
+
+[[workflow.steps]]
+id = "write_bronze"
+agent = "bronze_writer"
+purpose = "Preserve raw data and source provenance before cleaning"
+
+[[workflow.steps]]
+id = "normalize_silver"
+agent = "silver_builder"
+purpose = "Normalize identities, outcomes, rules, and executable depth"
+
+[[workflow.steps]]
+id = "freeze_snapshot"
+agent = "snapshot_barrier"
+purpose = "Require a coherent and fresh bundle for all legs"
+
+[[workflow.steps]]
+id = "quarantine"
+agent = "observation_validator"
+purpose = "Record invalid or incomplete observations with reasons"
+
+[[workflow.steps]]
+id = "evaluate_costs"
+agent = "cost_and_liquidity"
+purpose = "Include depth, fees, collateral, and conservative buffers"
+
+[[workflow.steps]]
+id = "evaluate_signals"
+agent = "signal_evaluator"
+purpose = "Evaluate payout coverage and distinguish price gaps"
+
+[[workflow.steps]]
+id = "risk_checks"
+agent = "risk_controller"
+purpose = "Apply deterministic policy before any paper plan"
+
+[[workflow.steps]]
+id = "paper_plan"
+agent = "paper_planner"
+purpose = "Create a conditional plan; never submit orders"
+
+[[workflow.steps]]
+id = "write_gold"
+agent = "audit_writer"
+purpose = "Persist candidates, rejections, evidence, and lineage"
+
+[[workflow.steps]]
+id = "explain_and_record"
+agent = "market_analyst"
+purpose = "Explain recorded results only when requested"
+
+[[workflow.steps]]
+id = "finish"
+agent = "audit_writer"
+purpose = "Return the stored result and trace IDs"
+
+[[workflow.edges]]
+source = "resolve_scope"
+target = "discover_fixtures"
+condition = "scoped"
+
+[[workflow.edges]]
+source = "discover_fixtures"
+target = "match_contracts"
+condition = "resolved"
+
+[[workflow.edges]]
+source = "match_contracts"
+target = "human_approval"
+condition = "review_required"
+
+[[workflow.edges]]
+source = "match_contracts"
+target = "collect_quotes"
+condition = "reviewed_match"
+
+[[workflow.edges]]
+source = "human_approval"
+target = "collect_quotes"
+condition = "approved_with_evidence"
+
+[[workflow.edges]]
+source = "human_approval"
+target = "write_gold"
+condition = "rejected"
+
+[[workflow.edges]]
+source = "collect_quotes"
+target = "write_bronze"
+condition = "collected_or_partial"
+
+[[workflow.edges]]
+source = "write_bronze"
+target = "normalize_silver"
+condition = "persisted"
+
+[[workflow.edges]]
+source = "normalize_silver"
+target = "freeze_snapshot"
+condition = "valid"
+
+[[workflow.edges]]
+source = "normalize_silver"
+target = "quarantine"
+condition = "invalid"
+
+[[workflow.edges]]
+source = "freeze_snapshot"
+target = "evaluate_costs"
+condition = "coherent"
+
+[[workflow.edges]]
+source = "freeze_snapshot"
+target = "quarantine"
+condition = "stale_or_incomplete"
+
+[[workflow.edges]]
+source = "quarantine"
+target = "write_gold"
+condition = "rejected"
+
+[[workflow.edges]]
+source = "evaluate_costs"
+target = "evaluate_signals"
+condition = "costs_verified"
+
+[[workflow.edges]]
+source = "evaluate_costs"
+target = "write_gold"
+condition = "unknown_costs_or_liquidity"
+
+[[workflow.edges]]
+source = "evaluate_signals"
+target = "risk_checks"
+condition = "coverage_candidate"
+
+[[workflow.edges]]
+source = "evaluate_signals"
+target = "write_gold"
+condition = "gap_or_no_candidate"
+
+[[workflow.edges]]
+source = "risk_checks"
+target = "paper_plan"
+condition = "allowed"
+
+[[workflow.edges]]
+source = "risk_checks"
+target = "write_gold"
+condition = "rejected"
+
+[[workflow.edges]]
+source = "paper_plan"
+target = "write_gold"
+condition = "prepared_not_executed"
+
+[[workflow.edges]]
+source = "write_gold"
+target = "explain_and_record"
+condition = "explanation_requested"
+
+[[workflow.edges]]
+source = "write_gold"
+target = "finish"
+condition = "no_explanation_requested"
+
+[[workflow.edges]]
+source = "explain_and_record"
+target = "finish"
+condition = "recorded"

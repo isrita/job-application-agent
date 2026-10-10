@@ -1,0 +1,15 @@
+{
+  "name": "prediction-market-agent",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sports arbitrage architecture workspace with an isolated reference UI",
+  "scripts": {
+    "dev": "npm --prefix apps/kalshi-btc15m run ui",
+    "reference:ui": "npm --prefix apps/kalshi-btc15m run ui",
+    "test": "npm --prefix apps/kalshi-btc15m test",
+    "check": "node --check apps/kalshi-btc15m/src/ui/public/app.js"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

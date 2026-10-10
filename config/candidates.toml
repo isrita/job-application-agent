@@ -1,0 +1,20 @@
+# candidates.toml
+# Registered candidates for the job application agent system
+
+[candidates.israel]
+id = "israel"
+name = "Israel"
+full_name = "Israel Jesús Bonilla"
+headline = "Data Engineer / Cloud & AI Solutions / Azure Databricks"
+email = ""
+data_dir = "data/raw/israel"
+knowledge_dir = "knowledge/israel"
+
+[candidates.sebastian]
+id = "sebastian"
+name = "Sebastian"
+full_name = "Sebastian Bonilla"
+headline = "Data Engineer / Cloud & AI Solutions"
+email = ""
+data_dir = "data/raw/sebastian"
+knowledge_dir = "knowledge/sebastian"

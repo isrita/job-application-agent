@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kalshi BTC 15M · Window Monitor</title>
+  <link rel="stylesheet" href="/styles.css"><script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top"><span class="brand-icon">K<span>15</span></span><b>Kalshi BTC 15M</b><span class="brand-sub">WINDOW MONITOR</span></a>
+    <div class="top-actions"><span class="demo-label"><i></i> DEMONSTRATION</span><button id="refresh" type="button">↻ Replay example</button></div>
+  </header>
+  <main id="top">
+    <section class="window-strip" aria-label="Window timeline">
+      <div class="window-clock"><p>KXBTC15M WINDOW</p><strong id="timer">20:00</strong><small id="phase-label" aria-live="polite">Simulated result</small></div>
+      <div class="timeline" id="timeline">
+        <div class="timeline-track"><div id="timeline-progress"></div><span class="settlement-track"></span></div>
+        <button class="milestone" data-minute="0" type="button"><i></i><b>0:00</b><small>OPEN</small></button>
+        <button class="milestone" data-minute="5" type="button"><i></i><b>5:00</b><small>SNAPSHOT</small></button>
+        <button class="milestone" data-minute="15" type="button"><i></i><b>15:00</b><small>CLOSE</small></button>
+        <button class="milestone" data-minute="20" type="button"><i></i><b>≈20:00</b><small>RESULT*</small></button>
+      </div>
+      <div class="example-summary"><span class="example-badge">EXAMPLE TRADE<small>Illustrative numbers</small></span><div><span>DEMO BALANCE</span><strong id="ending-balance">—</strong></div></div>
+    </section>
+
+    <div class="canvas-caption"><span id="ticker">KXBTC15M-DEMO</span><span>DATA → SNAPSHOT → AI → RISK → IOC → RESULT</span></div>
+    <section class="flow-canvas" id="flow-canvas" aria-label="Orchestrator workflow">
+      <svg id="connections" class="connections" aria-hidden="true"></svg>
+      <div class="flow-column sources">
+        <article class="node source-node" id="node-feed" data-ready-at="0">
+          <header><h2><span class="database-icon" aria-hidden="true">◉</span> Predictefy</h2><span class="tag amber">DEMO</span></header>
+          <div class="data-block"><span class="micro">● BTC/USDT · Binance stream</span><strong id="btc-now" class="price">—</strong></div>
+          <div class="data-block"><span class="micro">● Kalshi order book</span><div class="book-line"><span>UP <b id="yes-bid">—</b> / <b id="yes-ask">—</b></span><span>DOWN <b id="no-bid">—</b> / <b id="no-ask">—</b></span></div></div>
+          <div class="data-block"><span class="micro">● 1-minute candle warm-up</span><b>Last hour · 60 closed candles</b><small>Binance is a proxy for the BRTI index.</small></div>
+        </article>
+        <article class="node target-node" id="node-target" data-ready-at="0">
+          <header><h2>Kalshi</h2><span class="tag">PUBLIC API</span></header>
+          <div class="target-line"><span>Target · at open</span><strong id="target">—</strong></div><p class="micro">BRTI · 60-second average before open</p>
+        </article>
+        <aside class="node local-node"><span class="tag">YOUR PC</span><p>Your Kalshi key stays on your PC.<br>The SDK signs each order locally.</p><span class="local-foot">This interface sends 0 orders.</span></aside>
+      </div>
+
+      <div class="flow-column analysis">
+        <article class="node model-node" id="node-model" data-ready-at="5">
+          <header><h2>Math model</h2><span class="tag">YOUR PC</span></header><div class="model-line"><span>P(UP)</span><strong id="probability">—</strong></div>
+          <p class="formula">Φ( x / √(σ²·(t−60) + σ²·60/3) )</p><div class="model-meta"><span>σ <b id="sigma">—</b></span><span>Baseline, not a decision</span></div>
+        </article>
+        <article class="node snapshot-node" id="node-snapshot" data-ready-at="5">
+          <header><h2>Snapshot · 5:00</h2><span class="tag">FROZEN</span></header>
+          <dl class="snapshot-table">
+            <div><dt>Target</dt><dd id="snapshot-target">—</dd></div>
+            <div><dt>BTC vs. pre-open</dt><dd><span id="snapshot-btc">—</span> <span id="reference-delta" class="positive">—</span></dd></div>
+            <div><dt>Kalshi asks</dt><dd>UP <span id="snapshot-yes">—</span> · DOWN <span id="snapshot-no">—</span></dd></div>
+            <div><dt>Account</dt><dd><span id="balance">—</span> · stake $1–$2</dd></div>
+            <div><dt>P(UP) model</dt><dd id="snapshot-probability">—</dd></div>
+          </dl>
+          <div class="snapshot-foot"><span>Momentum 60 s <b id="momentum-60">—</b></span><span>180 s <b id="momentum-180">—</b></span></div>
+        </article>
+        <article class="node ai-node" id="node-ai" data-ready-at="5">
+          <header><h2><span class="ai-symbol" aria-hidden="true">✳</span> GPT-6 Sol</h2><span class="tag blue">CODEX CLI</span></header>
+          <p class="micro">read-only · no shell · no web</p>
+          <ul class="ai-reasons"><li id="model-comparison">Model vs. Kalshi ask</li><li id="reason">Loading decision…</li><li>One answer per window; limits enforced by code.</li></ul>
+          <div class="ai-answer"><b id="decision">—</b><span>stake <strong id="stake">—</strong> · cap <strong id="limit">—</strong></span></div>
+          <p class="micro answer-note">Illustrative answer · confidence <span id="confidence">—</span></p>
+        </article>
+      </div>
+
+      <div class="flow-column execution">
+        <article class="node risk-node" id="node-risk" data-ready-at="5">
+          <header><h2>Risk checks</h2><span class="tag">CODE, NOT THE MODEL</span></header>
+          <ul class="checks">
+            <li><i>✓</i><span id="risk-stake">Stake and contracts including fees</span></li>
+            <li><i>✓</i><span>First trade this window</span></li>
+            <li><i>✓</i><span id="daily-loss">Daily loss and limit</span></li>
+            <li><i>✓</i><span id="risk-floor">Balance floor and worst case</span></li>
+            <li><i>✓</i><span id="freshness">BTC price freshness</span></li>
+          </ul><div class="risk-footer"><span id="risk-state">—</span><span>1 order / window</span></div>
+        </article>
+        <article class="node order-node" id="node-order" data-ready-at="5">
+          <header><h2>One order</h2><span class="tag">PREDICTEFY SDK</span></header>
+          <strong class="order-intent" id="order-intent">—</strong><p class="micro">Immediate-or-cancel · local simulation</p>
+          <div class="fill-box"><strong id="fill-result">—</strong><small id="fill-cost">—</small><span class="simulation-label">SIMULATED FILL</span></div>
+        </article>
+        <article class="node settlement-node" id="node-settlement" data-ready-at="20">
+          <header><h2>Settlement</h2><span class="tag">KALSHI RESULT</span></header>
+          <p class="micro" id="close-result">Example settlement</p><div class="winner-row"><b id="winner">—</b><span id="payout">—</span></div>
+          <div class="pnl-line"><span>P&amp;L after fees</span><strong id="pnl">—</strong></div>
+        </article>
+      </div>
+    </section>
+
+    <footer class="flow-notes"><span><i></i> Simulated example · no live connection · 0 real orders</span><span>* Settlement depends on Kalshi publishing the result; ≈20:00 is illustrative.</span></footer>
+    <p class="notice" id="notice">Loading example…</p>
+    <section class="journal">
+      <header><div><p class="micro">LOCAL HISTORY · DRY RUN</p><h2>Dry-run history</h2></div><button id="refresh-review" type="button">Refresh history</button></header>
+      <p id="review-status">No runs with real market data yet.</p><div id="review-events" class="recent-list"></div>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "name": "kalshi-btc15m-bot",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Dry-run-first bot and review UI for Kalshi KXBTC15M",
+  "scripts": {
+    "test": "node --test test/*.test.ts",
+    "balance": "node src/main.ts balance",
+    "check": "node src/main.ts check",
+    "bot": "node src/main.ts bot",
+    "ui": "node src/ui/server.ts",
+    "start": "node src/ui/server.ts"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "@predictefy/sdk": "1.0.0-beta.9"
+  }
+}
