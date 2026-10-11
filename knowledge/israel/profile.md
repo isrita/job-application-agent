@@ -4,9 +4,9 @@
 
 ## Summary of Ingested Documentation
 - **Registered Resumes / CVs**: 2
-- **Certificates & Diplomas**: 2
+- **Certificates & Diplomas**: 8
 - **Projects & Portfolio**: 8
-- **Mapped Skills**: 51
+- **Mapped Skills**: 54
 
 ### Verified Work Experience & Projects (Router Map)
 - **Proj Koltin Health Dwh Dagster Dbt** (`data/israel/projects/proj_koltin_health_dwh_dagster_dbt.md`)
@@ -19,8 +19,14 @@
 - **Proj Globant Fastapi Batch Ingestion** (`data/israel/projects/proj_globant_fastapi_batch_ingestion.md`)
 
 ### Ingested Certifications
-- **Microsoft Certified: Azure Data Engineer Associate** (`azure_dp203.pdf`)
 - **Readme** (`README.md`)
+- **Cert Databricks Accredited Lakehouse Fundamentals** (`cert_databricks_accredited_lakehouse_fundamentals.md`)
+- **Cert Databricks Certified Data Engineer Associate** (`cert_databricks_certified_data_engineer_associate.md`)
+- **Cert Deeplearning Ai Supervised Machine Learning** (`cert_deeplearning_ai_supervised_machine_learning.md`)
+- **Cert Efset English C2 Proficient** (`cert_efset_english_c2_proficient.md`)
+- **Cert Linkedin Career Skills In Data Analytics** (`cert_linkedin_career_skills_in_data_analytics.md`)
+- **Cert Microsoft Azure Data Engineer Associate Dp203** (`cert_microsoft_azure_data_engineer_associate_dp203.md`)
+- **Cert Microsoft Azure Data Fundamentals Dp900** (`cert_microsoft_azure_data_fundamentals_dp900.md`)
 
 ### Resume Files
 - **Readme** (`README.md`)

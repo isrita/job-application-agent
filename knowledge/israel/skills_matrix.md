@@ -24,6 +24,7 @@
 | data_engineering | Adf | intermediate |
 | data_engineering | Airflow | intermediate |
 | data_engineering | Azure Data Factory | intermediate |
+| data_engineering | Azure Synapse | intermediate |
 | data_engineering | Bigquery | intermediate |
 | data_engineering | Data Lake | intermediate |
 | data_engineering | Data Modeling | intermediate |
@@ -31,6 +32,7 @@
 | data_engineering | Databricks | intermediate |
 | data_engineering | Dbt | intermediate |
 | data_engineering | Delta Lake | intermediate |
+| data_engineering | Elt | intermediate |
 | data_engineering | Etl | intermediate |
 | data_engineering | Event Hubs | intermediate |
 | data_engineering | Glue | intermediate |
@@ -45,6 +47,7 @@
 | data_governance_bi | Great Expectations | intermediate |
 | data_governance_bi | Power Bi | intermediate |
 | databases | Cassandra | intermediate |
+| databases | Cosmos Db | intermediate |
 | databases | Mongodb | intermediate |
 | databases | Mysql | intermediate |
 | databases | Postgresql | advanced |

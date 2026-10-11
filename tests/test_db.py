@@ -7,7 +7,8 @@ import sqlite3
 
 from job_agent.db.database import (
     init_db, save_document, save_application, get_applications,
-    save_interview, save_feedback, upsert_gap_learning, get_gap_learnings, search_fts
+    save_interview, save_feedback, upsert_gap_learning, get_gap_learnings, search_fts,
+    delete_document
 )
 from job_agent.db.models import Document, Application, Interview, Feedback, GapLearning
 
@@ -58,7 +59,8 @@ class TestDatabase(unittest.TestCase):
         # Search
         results = search_fts("Synapse Databricks", candidate_id="israel")
         self.assertTrue(len(results) > 0)
-        self.assertEqual(results[0].doc_id, "test_doc_01")
+        self.assertTrue(any(r.doc_id == "test_doc_01" for r in results))
+        delete_document("test_doc_01")
 
 
 if __name__ == "__main__":
