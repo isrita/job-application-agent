@@ -11,41 +11,40 @@ Designed for **Israel** and his brother **Sebastian**, sharing a centralized tec
 
 ```mermaid
 flowchart TD
-    subgraph S1["1. Raw Assets (data/raw/)"]
-        A1["Israel's Resumes, Certs, Projects"]
-        A2["Sebastian's Resumes, Certs, Projects"]
-        A3["Shared Technical Knowledge & Interview Repos"]
+    subgraph S1["1. Candidate & Shared Assets (data/)"]
+        A1["data/israel/\n(cvs/, certificates/, projects/)"]
+        A2["data/sebastian/\n(cvs/, certificates/, projects/)"]
+        A3["data/shared/\n(guides/, interviews/, certifications/)"]
     end
 
-    subgraph S2["2. Ingestion & Search Engine (src/job_agent/ingestion/)"]
+    subgraph S2["2. Ingestion & Fast Search Engine (src/job_agent/)"]
         B1["Parsers: PDF, DOCX, MD, TXT, PY, SQL"]
-        B2["SHA-256 Deduplication & Skill Extractor"]
+        B2["Frontmatter Extractor & Skill Discovery"]
         B3[("SQLite Database + FTS5 Index\nstorage/career.db")]
     end
 
-    subgraph S3["3. Auto-Synced Knowledge Base (knowledge/)"]
-        C1["knowledge/israel/ (Profile, Skills, Gaps)"]
-        C2["knowledge/sebastian/ (Profile, Skills, Gaps)"]
-        C3["knowledge/shared/ (STAR, System Design, Questions)"]
+    subgraph S3["3. Living Knowledge Base & Agent Router (knowledge/)"]
+        C1["knowledge/israel/\n(Router Map, Skills Matrix, Gaps Log)"]
+        C2["knowledge/sebastian/\n(Router Map, Skills Matrix, Gaps Log)"]
     end
 
-    subgraph S4["4. Pre-Application & Interview Simulation"]
+    subgraph S4["4. Agentic Routing & Interview Simulation"]
         D1["JD Matcher & Past Gap Warner\njob-agent match"]
-        D2["AI System Prompts (prompts/)\nSTAR Mock Interviews & CV Tailoring"]
+        D2["AI Agent Coach (prompts/)\nTargeted STAR Simulations & CV Tailoring"]
     end
 
     subgraph S5["5. Tracking & Continuous Improvement Loop"]
-        E1["Application & Interview Logging\njob-agent apply / interview"]
-        E2["Outcome & Feedback Recording\njob-agent feedback"]
-        E3{"Rejection / Gap Detected?"}
+        E1["Application & Round Tracking\njob-agent apply / interview"]
+        E2["Outcome & Rejection Feedback\njob-agent feedback"]
+        E3{"Rejection / Gap Identified?"}
         E4["Auto-Increment Gap Recurrence Counter"]
-        E5["Regenerate learnings_and_gaps.md & Warning Alerts"]
+        E5["Regenerate learnings_and_gaps.md & Alerts"]
         E6["Offer Recorded 🎉"]
     end
 
     A1 & A2 & A3 --> B1 --> B2 --> B3
     B3 --> C1 & C2
-    C1 & C2 & C3 --> D1 & D2
+    C1 & C2 --> D1 & D2
     D1 & D2 --> E1 --> E2 --> E3
     E3 -- Yes --> E4 --> E5 --> B3
     E3 -- No --> E6
@@ -53,30 +52,53 @@ flowchart TD
 
 ---
 
+## 💡 Design Philosophy: Agentic Context Routing vs. Heavy RAG
+
+Rather than introducing an over-engineered vector database (e.g., Qdrant, Chroma) and chunked embeddings that strip away the cohesive context of STAR behavioral stories, this platform implements **Agentic Context Routing & Metadata Navigation**:
+
+1. **Structured Plaintext Over Opaque Binaries**:
+   - Resumes are archived in PDF for external recruiter submissions, but all verified projects, case studies, and credential records are authored in Markdown (`.md`).
+   - Plaintext enables instant scanning, heading hierarchy preservation, and negligible token overhead.
+2. **Metadata Frontmatter Cards**:
+   - Every project file starts with an executive frontmatter header (`title`, `company`, `role`, `tech_stack`, `key_metrics`, `core_topics`).
+   - Agents read only the header to evaluate JD relevance in milliseconds without consuming context reading the entire file.
+3. **Living Router Map (`profile.md`)**:
+   - `knowledge/<candidate>/profile.md` serves as a GPS map for AI agents. It maps every verified project to its local filepath, allowing the agent to surgically load *only* the specific project needed to answer an interview question or craft tailored CV bullets.
+4. **Zero Cross-Contamination**:
+   - Personal projects and career history belong strictly to the individual (`data/<candidate>/projects/`).
+   - `data/shared/` is reserved strictly for neutral materials: technical cheat sheets, interview frameworks, and study guides.
+5. **Sub-Millisecond Hybrid Retrieval (FTS5)**:
+   - SQLite FTS5 provides instantaneous full-text search across all documents with Porter stemming, zero cloud API fees, and zero hallucination risk.
+
+---
+
 ## 🏗️ Step-by-Step Architectural Walkthrough
 
-### Layer 1: Ingestion & Document Repository (`src/job_agent/ingestion/`)
-- **Raw File Storage**: Documents reside in `data/raw/<candidate>/` (resumes, diplomas, notes) and `data/raw/shared/` (certifications, coding challenges, system design notes).
-- **Parsers (`parsers.py`)**: Safely parses text, metadata, and code structures from `.pdf`, `.docx`, `.md`, `.txt`, `.json`, `.py`, `.sql`, `.yaml`, and `.ts`.
-- **SHA-256 Incremental Deduplication**: Computes content hashes. Re-running ingestion is fast and only processes added or modified files.
-- **Skill Extraction Catalog**: Heuristic pattern-matching engine that discovers skills across Data Engineering, Cloud Infrastructure, Programming, Databases, BI, and Methodologies.
+### Layer 1: Candidate Sources & Shared Knowledge (`data/`)
+- **Strict Profile Boundaries**:
+  - `data/sebastian/`: Personal resumes (`cvs/`), credential records (`certificates/`), and verified projects (`projects/`).
+  - `data/israel/`: Israel's resumes (`cvs/`), credentials (`certificates/`), and verified projects (`projects/`).
+- **Shared Technical Arsenal (`data/shared/`)**:
+  - `guides/`: Concise cheat sheets for PySpark, Databricks, Delta Lake, dbt, SQL, Fabric, and Azure Data Factory.
+  - `interviews/`: Interview question banks, English simulations, STAR framework guidelines, and interviewer questions.
+  - `certifications/`: Databricks Associate and Professional exam preparation tracks.
+  - `projects/`: Reference coding challenges and architecture templates.
 
-### Layer 2: Relational Database & Full-Text Search (`storage/schema.sql`, `src/job_agent/db/`)
-- Relational schema in SQLite (`storage/career.db`):
-  - `candidates`: Profile information, target roles, and emails.
-  - `documents`: Ingested files, document types (`cv`, `certificate`, `project`, `note`, `shared`), hashes, and raw text.
+### Layer 2: Relational Database & Full-Text Search (`storage/career.db`, `src/job_agent/db/`)
+- Relational SQLite schema with FTS5 virtual tables:
+  - `candidates`: Profile information, target roles, and email contacts.
+  - `documents`: Ingested files, document types (`cv`, `certificate`, `project`, `note`, `shared`), SHA-256 hashes, and raw text.
   - `skills`: Detected technical competencies and estimated proficiencies.
   - `applications`: Job opportunities, company names, salary ranges, and application stages.
   - `interviews`: Round-by-round interview logs, questions asked, and candidate answers.
   - `feedbacks`: Rejection notes, recruiter emails, and self-reflections.
   - `gap_learnings`: Topic-specific registry of technical/behavioral weaknesses, recurrence counts, and action plans.
-- **SQLite FTS5 (Full-Text Search)**: High-speed full-text index across all documents, interview rounds, and notes with Porter stemming and tokenization.
 
-### Layer 3: Knowledge Base Auto-Synchronization (`knowledge/`)
-- Every ingestion or feedback update dynamically updates the candidate's markdown files:
-  - `profile.md`: Current document inventory, certificates, and portfolio.
+### Layer 3: Living Knowledge Base Synchronization (`knowledge/`)
+- Every ingestion or feedback update dynamically synchronizes the candidate's personal markdown files:
+  - `profile.md`: Living Router Map connecting target skills to specific project files.
   - `skills_matrix.md`: Categorized technical skill matrix with estimated proficiency.
-  - `learnings_and_gaps.md`: Living record of interview gaps, frequency of detection, and prioritized study roadmaps.
+  - `learnings_and_gaps.md`: Dedicated registry of interview weak spots, frequency of detection, and prioritized study roadmaps.
 
 ### Layer 4: Job Description Matching & Gap Prevention (`matcher.py`)
 - Analyzes job postings before applying.
@@ -84,12 +106,12 @@ flowchart TD
 - **High-Priority Warning System**: Cross-references job requirements with `gap_learnings`. If a role demands an area where the candidate previously stumbled, it generates an alert with the recommended study plan.
 
 ### Layer 5: AI Prompts & Interview Simulation (`prompts/`)
-- System prompts for LLMs (Antigravity IDE, Cursor, Claude, ChatGPT):
-  - [agent_israel.md](file:///c:/Users/IsraelJesusBonillaDe/Documents/job-application-agent/prompts/agent_israel.md): Personal career coach for Israel.
-  - [agent_sebastian.md](file:///c:/Users/IsraelJesusBonillaDe/Documents/job-application-agent/prompts/agent_sebastian.md): Personal career coach for Sebastian.
-  - [cv_tailor.md](file:///c:/Users/IsraelJesusBonillaDe/Documents/job-application-agent/prompts/cv_tailor.md): Generates Google impact-formula resume bullets tailored to specific JDs.
-  - [feedback_analyzer.md](file:///c:/Users/IsraelJesusBonillaDe/Documents/job-application-agent/prompts/feedback_analyzer.md): Diagnoses root cause of rejections and outputs CLI commands.
-  - [interview_prep.md](file:///c:/Users/IsraelJesusBonillaDe/Documents/job-application-agent/prompts/interview_prep.md): Conducts mock interviews focusing on candidate weak spots.
+- System prompts tailored for LLM agents (Antigravity IDE, Cursor, Claude, ChatGPT):
+  - [agent_sebastian.md](file:///c:/Users/sebas/OneDrive/Documentos/GitHub/job-application-agent/prompts/agent_sebastian.md): Dedicated career coach and interview partner for Sebastian.
+  - [agent_israel.md](file:///c:/Users/sebas/OneDrive/Documentos/GitHub/job-application-agent/prompts/agent_israel.md): Dedicated career coach for Israel.
+  - [cv_tailor.md](file:///c:/Users/sebas/OneDrive/Documentos/GitHub/job-application-agent/prompts/cv_tailor.md): Generates Google impact-formula resume bullets tailored to specific JDs.
+  - [feedback_analyzer.md](file:///c:/Users/sebas/OneDrive/Documentos/GitHub/job-application-agent/prompts/feedback_analyzer.md): Diagnoses root cause of rejections and outputs CLI commands.
+  - [interview_prep.md](file:///c:/Users/sebas/OneDrive/Documentos/GitHub/job-application-agent/prompts/interview_prep.md): Conducts mock interviews focusing on candidate weak spots.
 
 ---
 
@@ -106,26 +128,32 @@ job-application-agent/
 │   ├── settings.toml                  # App configurations, database paths, extensions
 │   └── candidates.toml                # Registered candidates (Israel, Sebastian)
 │
-├── data/raw/                          # RAW ASSET SOURCE
-│   ├── israel/                        # Israel's resumes, certificates, notes
-│   ├── sebastian/                     # Sebastian's resumes, certificates, notes
-│   └── shared/                        # Shared knowledge base
-│       ├── certifications/databricks/ # Complete Databricks Associate & Professional study guides
-│       ├── frameworks/                # STAR framework and interview strategies
-│       └── projects/                  # Real interview coding challenge repositories
+├── data/                              # SOURCE INPUT ASSETS
+│   ├── sebastian/                     # Sebastian's personal assets
+│   │   ├── cvs/                       # Resumes in PDF / Word / Markdown
+│   │   ├── certificates/              # Certifications and credentials
+│   │   └── projects/                  # Verified production projects with frontmatter
+│   ├── israel/                        # Israel's personal assets
+│   │   ├── cvs/                       # Resumes in PDF / Word / Markdown
+│   │   ├── certificates/              # Certifications and credentials
+│   │   └── projects/                  # Verified production projects with frontmatter
+│   └── shared/                        # Neutral shared technical knowledge
+│       ├── guides/                    # Tech cheat sheets (PySpark, Databricks, dbt, SQL)
+│       ├── interviews/                # Question banks, English mock prep, STAR guides
+│       ├── certifications/            # Databricks certification study guides
+│       └── projects/                  # Coding challenge templates & reference repos
 │
 ├── storage/
 │   ├── schema.sql                     # SQLite DDL schema with FTS5 virtual tables
 │   └── career.db                      # Local database (untracked by Git)
 │
-├── knowledge/                         # AUTO-GENERATED MARKDOWN KNOWLEDGE BASES
-│   ├── israel/                        # Profile, skills matrix, and learnings/gaps for Israel
-│   ├── sebastian/                     # Profile, skills matrix, and learnings/gaps for Sebastian
-│   └── shared/                        # System design cheat sheets & interviewer questions
+├── knowledge/                         # AUTO-GENERATED CANDIDATE INTELLIGENCE
+│   ├── sebastian/                     # profile.md (Router), skills_matrix.md, learnings_and_gaps.md
+│   └── israel/                        # profile.md (Router), skills_matrix.md, learnings_and_gaps.md
 │
 ├── prompts/                           # LLM SYSTEM PROMPTS
-│   ├── agent_israel.md                # System prompt for Israel's agent
-│   ├── agent_sebastian.md             # System prompt for Sebastian's agent
+│   ├── agent_sebastian.md             # System prompt for Sebastian's coach
+│   ├── agent_israel.md                # System prompt for Israel's coach
 │   ├── interview_prep.md              # Technical and behavioral mock interview coach
 │   ├── feedback_analyzer.md           # Rejection & gap analysis prompt
 │   └── cv_tailor.md                   # Job description CV customizer
@@ -161,44 +189,44 @@ uv sync
 uv run python -m job_agent doctor
 ```
 
-### 3. Ingest Documentation & Projects
+### 3. Ingest Documentation & Synchronize Knowledge Bases
 ```powershell
-# Ingest everything (all candidates + shared documents and projects)
+# Ingest everything (all candidates + shared guides and projects)
 uv run python -m job_agent ingest
 
 # Ingest specific candidate
-uv run python -m job_agent ingest -c israel
 uv run python -m job_agent ingest -c sebastian
+uv run python -m job_agent ingest -c israel
 ```
 
 ### 4. Terminal Visual Dashboard
 ```powershell
-uv run python -m job_agent dashboard
+uv run python -m job_agent dashboard -c sebastian
 ```
 
 ### 5. Match a Job Description (Pre-Application Check)
 ```powershell
-uv run python -m job_agent match -c israel -t "Seeking Senior Data Engineer with Databricks, PySpark, Azure Data Factory, and Kafka."
+uv run python -m job_agent match -c sebastian -t "Seeking Senior Data Engineer with Snowflake, dbt, Airflow, and PySpark."
 ```
 
 ### 6. Track an Application & Interview Round
 ```powershell
 # Register application
-uv run python -m job_agent apply -c israel --company "Tech Corp" --role "Senior Data Engineer" --salary "120k-140k USD" --location "Remote"
+uv run python -m job_agent apply -c sebastian --company "Tech Scaleup" --role "Senior Data Engineer" --salary "100k-120k USD" --location "Remote"
 
 # Record an interview round
-uv run python -m job_agent interview --app-id 1 -c israel --stage "tech_round_1" --questions "How do you handle small files in Delta Lake?" --answers "Explained OPTIMIZE and Z-ORDER."
+uv run python -m job_agent interview --app-id 1 -c sebastian --stage "tech_round_1" --questions "How do you handle schema evolution in Delta Lake?" --answers "Detailed STAR response on merge schema."
 ```
 
 ### 7. Record Rejection Feedback & Continuous Improvement
 ```powershell
-uv run python -m job_agent feedback -c israel -o rejected -f "Strong in SQL, but struggled with Kafka partitioning and consumer rebalancing." -g "Kafka Partitioning: consumer groups and partition rebalancing" -a "Build practical lab on Databricks with Kafka" --app-id 1
+uv run python -m job_agent feedback -c sebastian -o rejected -f "Strong architectural foundations, but needed deeper hands-on Kafka streaming." -g "Kafka Partitioning; Consumer Rebalancing" -a "Build local Kafka docker lab" --app-id 1
 ```
 
 ### 8. Full-Text Search (FTS5)
 ```powershell
-uv run python -m job_agent search "Liquid Clustering"
-uv run python -m job_agent search "Dagster"
+uv run python -m job_agent search "Delta Lake" -c sebastian
+uv run python -m job_agent search "Scout"
 ```
 
 ### 9. Run Test Suite
@@ -208,56 +236,15 @@ uv run python -m unittest discover -s tests
 
 ---
 
-## 📋 Roadmap: Remaining Steps for Sebastian to Complete
-
-To take this platform to 100% completion and make it an autonomous end-to-end job hunting system, here are the exact tasks prioritized for **Sebastian**:
-
-### 🎯 Task 1: Direct LLM Client Integration (`src/job_agent/ai/`)
-- **Current State**: System prompts exist in `prompts/`, but the user currently pastes them manually into an AI chat or IDE.
-- **Goal**: Create an AI client module (`src/job_agent/ai/client.py`) that uses the API keys defined in `.env` (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`).
-- **CLI Command to build**:
-  ```powershell
-  uv run python -m job_agent interview mock -c sebastian --app-id 2
-  ```
-  This command should load the candidate's profile, past gaps, and the target JD, and conduct an interactive terminal mock interview.
-
-### 🎯 Task 2: Automated Job Description Scraper (`src/job_agent/ingestion/scrapers.py`)
-- **Current State**: `job-agent apply` and `job-agent match` accept text strings or local files.
-- **Goal**: Allow passing a job posting URL directly:
-  ```powershell
-  uv run python -m job_agent match -c sebastian --url "https://jobs.lever.co/example/123"
-  ```
-  Support HTML parsing for LinkedIn, Greenhouse, Lever, and Workday postings to automatically extract title, company, requirements, and salary range.
-
-### 🎯 Task 3: ATS-Optimized PDF Resume Generator (`src/job_agent/reports/cv_generator.py`)
-- **Current State**: Resume tailoring instructions exist in `prompts/cv_tailor.md`.
-- **Goal**: Build a generator that takes the candidate's skills and tailored bullets and exports a clean, single-page PDF resume using ReportLab, Typst, or LaTeX:
-  ```powershell
-  uv run python -m job_agent export-cv -c sebastian --app-id 2 --output "cv_sebastian_custom.pdf"
-  ```
-
-### 🎯 Task 4: Interactive Web Kanban Board (Optional GUI)
-- **Current State**: Visual dashboard is rendered in the terminal using Rich.
-- **Goal**: Create a lightweight web dashboard (using FastAPI + HTML/Tailwind or Streamlit) showing a drag-and-drop Kanban board:
-  - Columns: `Applied` ➔ `Screening` ➔ `Tech Round` ➔ `Final Round` ➔ `Offer` / `Rejected`.
-  - Visual charts showing the most recurring technical gaps and success rates.
-
-### 🎯 Task 5: Automated GitHub Actions CI Workflow (`.github/workflows/ci.yml`)
-- **Goal**: Add continuous integration on GitHub that automatically runs:
-  - `uv sync`
-  - `uv run python -m unittest discover -s tests`
-  - Code formatting check with `ruff` or `flake8`.
-
----
-
 ## 📜 Operating Rules for Collaborators & Agents
 
 1. **Language Policy**:
    - All code, docstrings, CLI output, markdown files, and commit messages **MUST ALWAYS BE IN ENGLISH**.
-   - You may interact with the AI assistant in either English or Spanish, but project files remain strictly English.
+   - You may interact with the AI assistant in either English or Spanish, but workspace files remain strictly English.
 2. **Strict Profile Separation**:
-   - Israel's data resides in `data/raw/israel/` and `knowledge/israel/`.
-   - Sebastian's data resides in `data/raw/sebastian/` and `knowledge/sebastian/`.
-   - Shared data resides in `data/raw/shared/` and `knowledge/shared/`.
-3. **Privacy & Security**:
-   - Never commit `storage/career.db`, `.env`, or sensitive credentials into Git.
+   - Sebastian's assets reside in `data/sebastian/` and `knowledge/sebastian/`.
+   - Israel's assets reside in `data/israel/` and `knowledge/israel/`.
+   - Shared technical guides and interviews reside in `data/shared/`.
+3. **Data Integrity & Privacy**:
+   - Never commit `storage/career.db`, `.env`, or personal contact details into version control.
+   - Never fabricate projects or skills not backed by files in `data/`.

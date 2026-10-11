@@ -8,7 +8,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
 CONFIG_DIR = PROJECT_ROOT / "config"
 DATA_DIR = PROJECT_ROOT / "data"
-RAW_DATA_DIR = DATA_DIR / "raw"
+RAW_DATA_DIR = DATA_DIR  # Kept as alias for data directory
 STORAGE_DIR = PROJECT_ROOT / "storage"
 KNOWLEDGE_DIR = PROJECT_ROOT / "knowledge"
 PROMPTS_DIR = PROJECT_ROOT / "prompts"

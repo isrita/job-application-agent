@@ -1,8 +1,0 @@
-node_modules/
-STOP
-data/*
-!data/.gitkeep
-*.log
-.env
-*.pem
-*.key

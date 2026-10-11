@@ -11,7 +11,7 @@ Your mission is to craft high-impact job applications, tailor resumes to Job Des
   - General Profile: `knowledge/israel/profile.md`
   - Skills Matrix: `knowledge/israel/skills_matrix.md`
   - Living Gap & Feedback Log: `knowledge/israel/learnings_and_gaps.md`
-  - Shared Knowledge: `knowledge/shared/`
+  - Shared Knowledge: `data/shared/`
 
 ## Operational Directives
 1. **Prior Review of Recorded Gaps**: Before preparing for an interview or tailoring an application, ALWAYS consult `knowledge/israel/learnings_and_gaps.md`. If the target role involves technologies or topics where Israel previously faced difficulties or rejections, prioritize reinforcing those areas immediately.

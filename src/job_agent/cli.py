@@ -59,15 +59,15 @@ def doctor():
     else:
         table.add_row("SQLite Database", "[yellow]Pending initialization[/yellow]", "Run 'job-agent init' or 'job-agent ingest'")
 
-    # Raw directories
+    # Data directories
     for cid, cinfo in candidates.items():
         cand_dir = RAW_DATA_DIR / cid
         docs_count = len(list(cand_dir.rglob("*.*"))) if cand_dir.exists() else 0
-        table.add_row(f"Ingestion: {cinfo.get('name', cid)}", f"[green]Exists[/green]" if cand_dir.exists() else "[red]Missing[/red]", f"{docs_count} files in raw")
+        table.add_row(f"Ingestion: {cinfo.get('name', cid)}", f"[green]Exists[/green]" if cand_dir.exists() else "[red]Missing[/red]", f"{docs_count} files in data")
 
     shared_dir = RAW_DATA_DIR / "shared"
     shared_count = len(list(shared_dir.rglob("*.*"))) if shared_dir.exists() else 0
-    table.add_row("Ingestion: Shared Documents", f"[green]Exists[/green]" if shared_dir.exists() else "[red]Missing[/red]", f"{shared_count} files in raw")
+    table.add_row("Ingestion: Shared Documents", f"[green]Exists[/green]" if shared_dir.exists() else "[red]Missing[/red]", f"{shared_count} files in data")
 
     console.print(table)
     console.print("\n[green][OK] System check completed successfully.[/green]\n")
@@ -242,7 +242,12 @@ def search(query: str, candidate: Optional[str], limit: int):
     console.print(f"\n[bold green]Search results for '{query}':[/bold green]\n")
     for r in results:
         console.print(f"• [bold cyan]{r.title}[/bold cyan] ({r.category}) - [magenta]{r.candidate_id}[/magenta]")
-        console.print(f"  [dim]{r.snippet}[/dim]\n")
+        from rich.markup import escape
+        clean_snippet = r.snippet.replace("[b]", "[bold yellow]").replace("[/b]", "[/bold yellow]")
+        try:
+            console.print(f"  [dim]{clean_snippet}[/dim]\n")
+        except Exception:
+            console.print(f"  {escape(r.snippet)}\n")
 
 
 @cli.command()

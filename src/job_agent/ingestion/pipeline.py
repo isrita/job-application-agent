@@ -8,7 +8,8 @@ from job_agent.config import (
 )
 from job_agent.db.database import (
     init_db, save_document, get_document_by_hash, save_skills,
-    get_documents_by_candidate, get_skills_by_candidate, get_gap_learnings
+    get_documents_by_candidate, get_skills_by_candidate, get_gap_learnings,
+    delete_document
 )
 from job_agent.db.models import Document
 from job_agent.ingestion.parsers import (
@@ -51,10 +52,17 @@ def ingest_candidate_files(candidate_id: str, force: bool = False) -> Dict[str, 
     skipped_count = 0
     errors = []
 
+    # Prune stale records whose files were removed or renamed on disk
+    existing_docs = get_documents_by_candidate(candidate_id, include_shared=False)
+    for doc in existing_docs:
+        disk_path = PROJECT_ROOT / doc["file_path"]
+        if not disk_path.exists():
+            delete_document(doc["id"])
+
     # Walk directory
     for file_path in cand_dir.rglob("*"):
-        # Ignore hidden folders (.git, etc.) and virtual environment / cache directories
-        if any(part.startswith(".") or part in ("__pycache__", ".venv", "venv", "node_modules") for part in file_path.parts):
+        # Ignore hidden folders (.git, etc.), archive folders, and virtual environment / cache directories
+        if any(part.startswith(".") or part.startswith("_") or part in ("__pycache__", ".venv", "venv", "node_modules", "archive", "archives") for part in file_path.parts):
             continue
         if file_path.is_file() and file_path.suffix.lower() in SUPPORTED_EXTENSIONS:
             try:
@@ -128,7 +136,7 @@ def sync_candidate_knowledge_files(candidate_id: str) -> None:
     cand_knowledge_dir = KNOWLEDGE_DIR / candidate_id
     cand_knowledge_dir.mkdir(parents=True, exist_ok=True)
 
-    docs = get_documents_by_candidate(candidate_id)
+    docs = get_documents_by_candidate(candidate_id, include_shared=False)
     skills = get_skills_by_candidate(candidate_id)
     gaps = get_gap_learnings(candidate_id)
 
@@ -139,9 +147,9 @@ def sync_candidate_knowledge_files(candidate_id: str) -> None:
     proj_docs = [d for d in docs if d["doc_type"] == "project"]
 
     profile_content = [
-        f"# Candidate Profile: {candidate_id.upper()}",
+        f"# Candidate Profile & Agent Router: {candidate_id.upper()}",
         "",
-        "> Knowledge base automatically synchronized from ingested documents.",
+        "> Living knowledge base and context routing map for AI agents.",
         "",
         "## Summary of Ingested Documentation",
         f"- **Registered Resumes / CVs**: {len(cv_docs)}",
@@ -149,14 +157,24 @@ def sync_candidate_knowledge_files(candidate_id: str) -> None:
         f"- **Projects & Portfolio**: {len(proj_docs)}",
         f"- **Mapped Skills**: {len(skills)}",
         "",
-        "### Ingested Certifications",
+        "### Verified Work Experience & Projects (Router Map)",
     ]
 
+    if proj_docs:
+        for p in proj_docs:
+            profile_content.append(f"- **{p['title']}** (`{p['file_path']}`)")
+    else:
+        profile_content.append("_No projects added yet in `data/{0}/projects`_".format(candidate_id))
+
+    profile_content.extend([
+        "",
+        "### Ingested Certifications",
+    ])
     if cert_docs:
         for c in cert_docs:
             profile_content.append(f"- **{c['title']}** (`{c['file_name']}`)")
     else:
-        profile_content.append("_No certificates added yet in `data/raw/{0}/certificates`_".format(candidate_id))
+        profile_content.append("_No certificates added yet in `data/{0}/certificates`_".format(candidate_id))
 
     profile_content.extend([
         "",
@@ -166,7 +184,7 @@ def sync_candidate_knowledge_files(candidate_id: str) -> None:
         for cv in cv_docs:
             profile_content.append(f"- **{cv['title']}** (`{cv['file_name']}`)")
     else:
-        profile_content.append("_No resumes added yet in `data/raw/{0}/cvs`_".format(candidate_id))
+        profile_content.append("_No resumes added yet in `data/{0}/cvs`_".format(candidate_id))
 
     with open(profile_path, "w", encoding="utf-8") as f:
         f.write("\n".join(profile_content) + "\n")

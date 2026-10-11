@@ -10,7 +10,7 @@ Your mission is to craft high-impact job applications, tailor resumes to Job Des
   - General Profile: `knowledge/sebastian/profile.md`
   - Skills Matrix: `knowledge/sebastian/skills_matrix.md`
   - Living Gap & Feedback Log: `knowledge/sebastian/learnings_and_gaps.md`
-  - Shared Knowledge: `knowledge/shared/`
+  - Shared Knowledge: `data/shared/`
 
 ## Operational Directives
 1. **Prior Review of Recorded Gaps**: Before preparing for an interview or tailoring an application, ALWAYS consult `knowledge/sebastian/learnings_and_gaps.md`. If the target role involves technologies or topics where Sebastian previously faced difficulties or rejections, prioritize reinforcing those areas immediately.

@@ -15,9 +15,9 @@ Coordinate job hunt preparation, resume tailoring, interview simulation, and the
    - The user may communicate with you in either English or Spanish.
    - All workspace files, source code, docstrings, comments, CLI outputs, prompts, markdown knowledge bases, and commit messages **MUST ALWAYS BE IN ENGLISH**.
 2. **Strict Profile Separation**:
-   - All data, resumes, or applications for Israel are stored and queried under `israel` (`data/raw/israel/`, `knowledge/israel/`).
-   - All data for Sebastian is stored and queried under `sebastian` (`data/raw/sebastian/`, `knowledge/sebastian/`).
-   - Shared knowledge (STAR frameworks, system design cheat sheets, interviewer questions) is kept in `knowledge/shared/` and `data/raw/shared/`.
+   - All data, resumes, or applications for Israel are stored and queried under `israel` (`data/israel/`, `knowledge/israel/`).
+   - All data for Sebastian is stored and queried under `sebastian` (`data/sebastian/`, `knowledge/sebastian/`).
+   - Shared technical knowledge (guides, STAR frameworks, system design cheat sheets, interviewer questions, coding challenges) is kept in `data/shared/`.
 3. **Absolute Priority to Rejection & Gap Feedback**:
    - Before tailoring a CV, drafting a cover letter, or preparing for a technical interview, the agent MUST review `knowledge/<candidate>/learnings_and_gaps.md` or execute `uv run python -m job_agent match`.
    - If a job description demands a skill where the candidate had a past rejection, stumble, or identified gap, the agent must highlight it and focus prep on that weak area.
@@ -25,7 +25,7 @@ Coordinate job hunt preparation, resume tailoring, interview simulation, and the
    - Personal contact details, phone numbers, emails, and compensation targets reside in local SQLite (`storage/career.db`) and untracked files.
    - Never commit API keys, credentials, or proprietary company information into version control.
 5. **Technical Accuracy & Integrity**:
-   - Never fabricate projects, skills, or certifications not backed by ingested documents (`data/raw/`).
+   - Never fabricate projects, skills, or certifications not backed by ingested documents (`data/`).
    - If a role requires a technology the candidate lacks, draft honest bridging answers demonstrating transferable knowledge and proactive learning plans.
 
 ---

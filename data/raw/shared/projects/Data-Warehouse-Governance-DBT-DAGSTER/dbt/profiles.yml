@@ -1,7 +1,0 @@
-koltin_dw:
-  target: dev
-  outputs:
-    dev:
-      type: duckdb
-      path: 'koltin_dwh.duckdb'
-      threads: 4

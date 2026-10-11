@@ -81,6 +81,14 @@ def save_document(doc: Document) -> None:
         )
 
 
+def delete_document(doc_id: str) -> None:
+    conn = get_connection()
+    with conn:
+        conn.execute("DELETE FROM search_fts WHERE doc_id = ?", (doc_id,))
+        conn.execute("DELETE FROM documents WHERE id = ?", (doc_id,))
+    conn.close()
+
+
 def get_document_by_hash(file_hash: str) -> Optional[Dict[str, Any]]:
     conn = get_connection()
     row = conn.execute("SELECT * FROM documents WHERE file_hash = ?", (file_hash,)).fetchone()
@@ -88,13 +96,18 @@ def get_document_by_hash(file_hash: str) -> Optional[Dict[str, Any]]:
     return dict(row) if row else None
 
 
-def get_documents_by_candidate(candidate_id: str) -> List[Dict[str, Any]]:
+def get_documents_by_candidate(candidate_id: str, include_shared: bool = True) -> List[Dict[str, Any]]:
     conn = get_connection()
-    # If candidate_id is specified, include candidate's docs plus 'shared' docs
-    rows = conn.execute(
-        "SELECT * FROM documents WHERE candidate_id = ? OR candidate_id = 'shared' ORDER BY updated_at DESC",
-        (candidate_id,)
-    ).fetchall()
+    if include_shared:
+        rows = conn.execute(
+            "SELECT * FROM documents WHERE candidate_id = ? OR candidate_id = 'shared' ORDER BY updated_at DESC",
+            (candidate_id,)
+        ).fetchall()
+    else:
+        rows = conn.execute(
+            "SELECT * FROM documents WHERE candidate_id = ? ORDER BY updated_at DESC",
+            (candidate_id,)
+        ).fetchall()
     conn.close()
     return [dict(r) for r in rows]
 
