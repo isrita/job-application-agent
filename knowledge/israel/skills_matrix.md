@@ -13,8 +13,10 @@
 | cloud_infrastructure | Aws | intermediate |
 | cloud_infrastructure | Azure | intermediate |
 | cloud_infrastructure | Azure Devops | intermediate |
+| cloud_infrastructure | Bash | intermediate |
 | cloud_infrastructure | Ci/Cd | intermediate |
 | cloud_infrastructure | Docker | intermediate |
+| cloud_infrastructure | Github Actions | intermediate |
 | cloud_infrastructure | Kubernetes | intermediate |
 | cloud_infrastructure | Linux | intermediate |
 | cloud_infrastructure | Powershell | intermediate |
@@ -30,13 +32,17 @@
 | data_engineering | Dbt | intermediate |
 | data_engineering | Delta Lake | intermediate |
 | data_engineering | Etl | intermediate |
+| data_engineering | Event Hubs | intermediate |
+| data_engineering | Glue | intermediate |
 | data_engineering | Kafka | intermediate |
 | data_engineering | Lakehouse | advanced |
 | data_engineering | Pyspark | advanced |
 | data_engineering | Snowflake | advanced |
 | data_engineering | Spark | advanced |
 | data_engineering | Sql | advanced |
+| data_engineering | T-Sql | intermediate |
 | data_governance_bi | Data Quality | intermediate |
+| data_governance_bi | Great Expectations | intermediate |
 | data_governance_bi | Power Bi | intermediate |
 | databases | Cassandra | intermediate |
 | databases | Mongodb | intermediate |
@@ -46,3 +52,4 @@
 | programming | Java | intermediate |
 | programming | Python | intermediate |
 | programming | Scala | advanced |
+| programming | Typescript | intermediate |

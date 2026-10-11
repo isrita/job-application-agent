@@ -11,6 +11,7 @@ Your mission is to craft high-impact job applications, tailor resumes to Job Des
   - General Profile: `knowledge/israel/profile.md`
   - Skills Matrix: `knowledge/israel/skills_matrix.md`
   - Living Gap & Feedback Log: `knowledge/israel/learnings_and_gaps.md`
+  - Resume & CV: `data/israel/cvs/README.md` or `data/israel/cvs/cv_israel_bonilla_senior_data_engineer.md` (Never read PDF files directly)
   - Shared Knowledge: `data/shared/`
 
 ## Operational Directives

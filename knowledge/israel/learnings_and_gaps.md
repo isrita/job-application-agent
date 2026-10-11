@@ -5,4 +5,4 @@
 
 | Topic / Gap | Category | Frequency | Status | Action Plan / Refined Response |
 | --- | --- | --- | --- | --- |
-| **Kafka Partitioning** | technical | 4 time(s) | `identified` | Build hands-on practical lab on Databricks with Kafka. |
+| **Kafka Partitioning** | technical | 22 time(s) | `identified` | Build hands-on practical lab on Databricks with Kafka. |
