@@ -9,15 +9,15 @@
 - **Mapped Skills**: 41
 
 ### Verified Work Experience & Projects (Router Map)
-- **Proj Cheers Health Aws Pyspark** (`data/sebastian/projects/proj_cheers_health_aws_pyspark.md`)
-- **Proj Globant Migration Api** (`data/sebastian/projects/proj_globant_migration_api.md`)
-- **Proj Hawkers Club Snowflake Dbt** (`data/sebastian/projects/proj_hawkers_club_snowflake_dbt.md`)
 - **Proj Pallon Spatial Etl** (`data/sebastian/projects/proj_pallon_spatial_etl.md`)
 - **Proj Portfolio Lima Real Estate** (`data/sebastian/projects/proj_portfolio_lima_real_estate.md`)
 - **Proj Portfolio Scout Engine** (`data/sebastian/projects/proj_portfolio_scout_engine.md`)
 - **Proj Portfolio Steam Intelligence** (`data/sebastian/projects/proj_portfolio_steam_intelligence.md`)
 - **Proj Portfolio Surf Predictor** (`data/sebastian/projects/proj_portfolio_surf_predictor.md`)
 - **Proj Telcel Databricks Medallion** (`data/sebastian/projects/proj_telcel_databricks_medallion.md`)
+- **Proj Cheers Health Aws Pyspark** (`data/sebastian/projects/proj_cheers_health_aws_pyspark.md`)
+- **Proj Globant Migration Api** (`data/sebastian/projects/proj_globant_migration_api.md`)
+- **Proj Hawkers Club Snowflake Dbt** (`data/sebastian/projects/proj_hawkers_club_snowflake_dbt.md`)
 
 ### Ingested Certifications
 - **Cert 4Geeks Full Stack Software Development** (`cert_4geeks_full_stack_software_development.md`)
